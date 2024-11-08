@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://phambinh.net/wp-content/uploads/2019/12/6475083_out-of-the-abyss-the-new-d-and-d-adventure_t222975d6.jpg">
+    <title>App Oto</title>
+</head>
+    
+
+    
+<body>
+
+    <input type="text" id="input" placeholder="Enter car name...">
+    <button id="submit">Add</button>
+    <ul id="root">Danh sách:</ul>
+    <script>
+        // ỨNG DỤNG THỰC TẾ ( các kiến thức đã học )
+        const $ = document.querySelector.bind(document);
+        const $$ = document.querySelectorAll.bind(document);
+        
+        const app = (() => {
+            const cars = ['BMW'];
+
+            const root = $('#root');
+            const input = $('#input');
+            const submit = $('#submit');
+            
+
+            return {
+                add(car){
+                    cars.push(car);
+                },
+
+                delete(index){
+                    cars.splice(index, 1);
+                },
+
+                render(){
+                    const html = cars.map( (car, index) => 
+                        `<li>${car}
+                            <span class="delete" data-index="${index}">&times</span>
+                            </li>`
+                    ) 
+                    .join('');
+
+                    root.innerHTML = html;
+                },
+
+                handleDelete(e){
+                    // console.log(e.target)
+
+                    const deleteBtn = e.target.closest('.delete');
+                    // closest() là một phương thức của DOM element giúp kiểm tra xem element đó hay cha của nó có chứa cái class cần tìm hay không
+                    //console.log(deleteBtn);
+                    if(deleteBtn){
+                        const index = deleteBtn.dataset.index; // dataset(data-) ; .index(index) giúp lấy ra được value ở bên trong 
+                        //console.log(index);
+                        this.delete(index);
+                        this.render();
+                    }
+                },
+
+                init(){ // hàm để bắt đầu khởi tạo ứng dụng
+                    // handle DOM events
+
+                    //cách 1:
+
+                    // const _this = this;
+
+                    // submit.onclick = function(){ // khi click vào nút Add thì sẽ lấy value của ô input
+                    //     const car = input.value;
+                    //     _this.add(car);
+                    //     _this.render();
+                    // } 
+
+                    // cách 2:
+
+                    submit.onclick = () =>{ // khi click vào nút Add thì sẽ lấy value của ô input
+                        const car = input.value;
+                        this.add(car);
+                        this.render();
+
+                        input.value = null;
+                        input.focus();
+                    } 
+
+                    root.onclick = this.handleDelete.bind(this); // this ở trong ngoặc là app
+
+                    this.render();
+                }
+            } // ứng dụng closure
+        })(); // ứng dụng IIFE           
+        
+        app.init();
+    </script>
+</body>
+</html>
